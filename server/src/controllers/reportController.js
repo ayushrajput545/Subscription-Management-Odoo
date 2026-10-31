@@ -45,6 +45,24 @@ const validateGrouping = (req, res) => {
 };
 const dateParams = (query) => ({ startDate: query.startDate ?? null, endDate: query.endDate ?? null });
 
+export const getAdminDashboardSummary = async (req, res) => {
+    try {
+        const { rows } = await pool.query(
+            `SELECT
+                (SELECT COUNT(*) FROM users)::integer AS total_users,
+                (SELECT COUNT(*) FROM subscriptions WHERE status = 'ACTIVE')::integer AS active_subscriptions,
+                (SELECT COALESCE(SUM(p.amount), 0)::numeric(14,2)
+                 FROM payments p JOIN invoices i ON i.id = p.invoice_id
+                 WHERE i.status <> 'CANCELLED') AS collected_amount,
+                (SELECT COUNT(*)::integer FROM invoices
+                 WHERE status <> 'CANCELLED' AND amount_paid < total) AS outstanding_invoice_count`
+        );
+        return res.json({ summary: rows[0] });
+    } catch (error) {
+        return fail(res, error, "Admin dashboard summary failed:");
+    }
+};
+
 export const getDashboardReport = async (req, res) => {
     if (!validateDates(req, res)) return;
     const daysValue = req.query.expiringDays ?? "30";

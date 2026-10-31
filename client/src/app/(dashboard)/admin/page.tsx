@@ -35,6 +35,13 @@ const navItems: NavItem[] = [
 type Toast = { id: number; message: string; type: "success" | "error" };
 let toastId = 0;
 
+type DashboardSummary = {
+    total_users: number;
+    active_subscriptions: number;
+    collected_amount: string | number;
+    outstanding_invoice_count: number;
+};
+
 // ─── Admin Dashboard ──────────────────────────────────────────────────────────
 export default function AdminDashboard() {
     const { user, loading, logout } = useAuth();
@@ -43,6 +50,9 @@ export default function AdminDashboard() {
     const [activeSection, setActiveSection] = useState("Dashboard");
     const [users, setUsers] = useState<User[]>([]);
     const [usersLoading, setUsersLoading] = useState(false);
+    const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary | null>(null);
+    const [dashboardLoading, setDashboardLoading] = useState(true);
+    const [dashboardError, setDashboardError] = useState("");
     const [toasts, setToasts] = useState<Toast[]>([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -77,11 +87,30 @@ export default function AdminDashboard() {
         }
     }, []);
 
+    const fetchDashboardSummary = useCallback(async () => {
+        setDashboardLoading(true);
+        setDashboardError("");
+        try {
+            const response = await api.get("/admin/dashboard");
+            setDashboardSummary(response.data.summary);
+        } catch {
+            setDashboardError("Dashboard metrics could not be loaded.");
+        } finally {
+            setDashboardLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
         if (loading) return;
         if (!user) { router.replace("/login"); return; }
         if (user.role !== "ADMIN") { router.replace("/unauthorized"); return; }
     }, [user, loading, router]);
+
+    useEffect(() => {
+        if (loading || user?.role !== "ADMIN") return;
+        const timer = window.setTimeout(() => { void fetchDashboardSummary(); }, 0);
+        return () => window.clearTimeout(timer);
+    }, [loading, user, fetchDashboardSummary]);
 
     useEffect(() => {
         if (activeSection === "Staff Management") fetchUsers();
@@ -104,6 +133,7 @@ export default function AdminDashboard() {
             setShowCreateModal(false);
             setForm({ name: "", email: "", password: "" });
             fetchUsers();
+            fetchDashboardSummary();
         } catch (err) {
             if (axios.isAxiosError(err))
                 setFormError(err.response?.data?.message || "Failed to create staff");
@@ -127,6 +157,7 @@ export default function AdminDashboard() {
             addToast("User updated successfully", "success");
             setShowEditModal(false);
             fetchUsers();
+            fetchDashboardSummary();
         } catch (err) {
             if (axios.isAxiosError(err))
                 setFormError(err.response?.data?.message || "Failed to update user");
@@ -144,6 +175,7 @@ export default function AdminDashboard() {
             setShowDeleteModal(false);
             setSelectedUser(null);
             fetchUsers();
+            fetchDashboardSummary();
         } catch (err) {
             if (axios.isAxiosError(err))
                 addToast(err.response?.data?.message || "Failed to delete user", "error");
@@ -263,21 +295,39 @@ export default function AdminDashboard() {
                         <div className="space-y-6">
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 {[
-                                    { label: "Total Users", value: "–", icon: <Users className="w-5 h-5 text-indigo-400" />, color: "border-indigo-700/30 bg-indigo-900/10" },
-                                    { label: "Subscriptions", value: "Coming Soon", icon: <Shield className="w-5 h-5 text-purple-400" />, color: "border-purple-700/30 bg-purple-900/10" },
-                                    { label: "Revenue", value: "Coming Soon", icon: <CreditCard className="w-5 h-5 text-emerald-400" />, color: "border-emerald-700/30 bg-emerald-900/10" },
-                                    { label: "Reports", value: "Coming Soon", icon: <BarChart3 className="w-5 h-5 text-amber-400" />, color: "border-amber-700/30 bg-amber-900/10" },
+                                    { label: "Total Users", value: dashboardSummary ? Number(dashboardSummary.total_users).toLocaleString("en-IN") : null, icon: <Users className="w-5 h-5 text-indigo-400" />, color: "border-indigo-700/30 bg-indigo-900/10" },
+                                    { label: "Active Subscriptions", value: dashboardSummary ? Number(dashboardSummary.active_subscriptions).toLocaleString("en-IN") : null, icon: <Shield className="w-5 h-5 text-purple-400" />, color: "border-purple-700/30 bg-purple-900/10" },
+                                    { label: "Collected Revenue", value: dashboardSummary ? new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(dashboardSummary.collected_amount)) : null, icon: <CreditCard className="w-5 h-5 text-emerald-400" />, color: "border-emerald-700/30 bg-emerald-900/10" },
+                                    { label: "Outstanding Invoices", value: dashboardSummary ? Number(dashboardSummary.outstanding_invoice_count).toLocaleString("en-IN") : null, icon: <BarChart3 className="w-5 h-5 text-amber-400" />, color: "border-amber-700/30 bg-amber-900/10", href: "/admin/reports" },
                                 ].map((card) => (
-                                    <div key={card.label} className={`rounded-xl border p-5 ${card.color}`}>
-                                        <div className="flex items-center justify-between mb-3">{card.icon}<span className="text-xs text-gray-500">{card.label}</span></div>
-                                        <p className="text-2xl font-bold text-white">{card.value}</p>
-                                    </div>
+                                    <button key={card.label} type="button" onClick={card.href ? () => router.push(card.href) : undefined} className={`w-full rounded-xl border p-5 text-left ${card.color} ${card.href ? "transition hover:border-amber-500/50" : "cursor-default"}`}>
+                                        <div className="mb-3 flex items-center justify-between">{card.icon}<span className="text-xs text-gray-500">{card.label}</span></div>
+                                        <p className="text-2xl font-bold text-white">{dashboardLoading ? <Loader2 className="h-6 w-6 animate-spin text-gray-400" /> : dashboardError ? "—" : card.value}</p>
+                                    </button>
                                 ))}
                             </div>
+                            {dashboardError && (
+                                <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-red-800/60 bg-red-950/30 px-4 py-3 text-sm text-red-300">
+                                    <span>{dashboardError}</span>
+                                    <button type="button" onClick={fetchDashboardSummary} className="rounded-lg border border-red-700/60 px-3 py-1.5 hover:bg-red-900/30">Retry</button>
+                                </div>
+                            )}
 
                             <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-6">
                                 <h2 className="text-white font-semibold mb-3">Quick Actions</h2>
                                 <div className="flex flex-wrap gap-3">
+                                    {[
+                                        { label: "Products", href: "/admin/products", icon: <Package className="w-4 h-4" /> },
+                                        { label: "Plans", href: "/admin/plans", icon: <CreditCard className="w-4 h-4" /> },
+                                        { label: "Subscriptions", href: "/admin/subscriptions", icon: <Shield className="w-4 h-4" /> },
+                                        { label: "Invoices", href: "/admin/invoices", icon: <FileText className="w-4 h-4" /> },
+                                        { label: "Payments", href: "/admin/payments", icon: <CreditCard className="w-4 h-4" /> },
+                                        { label: "Reports", href: "/admin/reports", icon: <BarChart3 className="w-4 h-4" /> },
+                                    ].map((action) => (
+                                        <button key={action.label} type="button" onClick={() => router.push(action.href)} className="flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800/60 px-4 py-2 text-sm text-gray-300 transition hover:border-indigo-500/50 hover:bg-gray-800 hover:text-white">
+                                            {action.icon} {action.label}
+                                        </button>
+                                    ))}
                                     <button
                                         onClick={() => setActiveSection("Staff Management")}
                                         className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600/20 border border-indigo-700/30 text-indigo-300 hover:bg-indigo-600/30 transition text-sm"

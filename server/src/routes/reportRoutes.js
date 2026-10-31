@@ -2,7 +2,7 @@ import express from "express";
 import { protect } from "../middleware/authMiddleware.js";
 import { authorizeRoles } from "../middleware/roleMiddleware.js";
 import {
-    getDashboardReport, getRevenueReport, getSubscriptionReport, getInvoiceReport,
+    getAdminDashboardSummary, getDashboardReport, getRevenueReport, getSubscriptionReport, getInvoiceReport,
     getPaymentReport, getTopCustomersReport, getExpiringSubscriptionsReport,
     getOutstandingInvoicesReport,
 } from "../controllers/reportController.js";
@@ -10,6 +10,7 @@ import {
 const router = express.Router();
 const reportAccess = [protect, authorizeRoles("ADMIN", "STAFF")];
 
+router.get("/admin/dashboard", protect, authorizeRoles("ADMIN"), getAdminDashboardSummary);
 router.get("/reports/dashboard", ...reportAccess, getDashboardReport);
 router.get("/reports/revenue", ...reportAccess, getRevenueReport);
 router.get("/reports/subscriptions", ...reportAccess, getSubscriptionReport);
