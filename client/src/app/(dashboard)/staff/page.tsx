@@ -46,11 +46,11 @@ export default function StaffDashboard() {
                     </div>
                     <span className="text-white font-bold">SubsTrack</span>
                 </div>
-                <div className="ml-auto flex items-center gap-4">
+                <div className="ml-0 w-11/12 flex justify-between items-center gap-4">
                     <span className="text-gray-400 text-sm hidden sm:block">
                         {user?.name} <span className="text-xs text-blue-400 ml-1">STAFF</span>
                     </span>
-                    <button onClick={logout} className="flex items-center gap-1.5 text-gray-400 hover:text-red-400 transition text-sm">
+                    <button onClick={logout} className="flex mr-8 items-center gap-1.5 text-gray-400 hover:text-red-400 transition text-sm">
                         <LogOut className="w-4 h-4" />
                         <span className="hidden sm:block">Sign out</span>
                     </button>
@@ -86,13 +86,7 @@ export default function StaffDashboard() {
                         </div>
                     ))}
                 </div>
-
-                <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-6">
-                    <h2 className="text-white font-semibold mb-1">Phase 2 Preview</h2>
-                    <p className="text-gray-400 text-sm">
-                        Browse the catalog and manage quotations and subscriptions. Invoice and payment tools will be added in later phases.
-                    </p>
-                </div>
+ 
             </main>
         </div>
     );

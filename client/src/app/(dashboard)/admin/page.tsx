@@ -282,7 +282,7 @@ export default function AdminDashboard() {
                         <Users className="w-5 h-5" />
                     </button>
                     <h1 className="text-lg font-semibold text-white">{activeSection}</h1>
-                    <div className="ml-auto flex items-center gap-4">
+                    <div className="ml-0 flex items-center gap-4">
                         <span className="hidden sm:block text-sm text-gray-500">
                             Welcome back, <span className="text-gray-300">{user?.name}</span>
                         </span>

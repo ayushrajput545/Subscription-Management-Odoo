@@ -34,11 +34,11 @@ export default function CustomerDashboard() {
                     </div>
                     <span className="text-white font-bold">SubsTrack</span>
                 </div>
-                <div className="ml-auto flex items-center gap-4">
+                <div className="ml-0 flex w-11/12 justify-between items-center gap-4">
                     <span className="text-gray-400 text-sm hidden sm:block">
                         {user?.name} <span className="text-xs text-gray-500 ml-1">CUSTOMER</span>
                     </span>
-                    <button onClick={logout} className="flex items-center gap-1.5 text-gray-400 hover:text-red-400 transition text-sm">
+                    <button onClick={logout} className="flex mr-8 items-center gap-1.5 text-gray-400 hover:text-red-400 transition text-sm">
                         <LogOut className="w-4 h-4" />
                         <span className="hidden sm:block">Sign out</span>
                     </button>
