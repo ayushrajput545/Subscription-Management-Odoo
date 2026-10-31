@@ -33,6 +33,7 @@ const scheduleLabel = (intervalMs: number) => {
     return Number.isInteger(hours) && hours >= 1 ? `Every ${hours} hour${hours === 1 ? "" : "s"}` : `Every ${Math.round(intervalMs / 60_000)} minutes`;
 };
 
+// Billing workspace component for managing user billing and subscription details
 export default function BillingWorkspace() {
     const { user, loading } = useAuth();
     const [status, setStatus] = useState<BillingStatus | null>(null);

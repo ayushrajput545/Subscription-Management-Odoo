@@ -14,11 +14,46 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Application metadata for SEO and browser display
 export const metadata: Metadata = {
-  title: "SubsTrack — Subscription Management",
-  description: "Manage subscriptions, teams, and billing in one place.",
+  title: {
+    default: "SubsTrack | Smart Subscription Management",
+    template: "%s | SubsTrack",
+  },
+  description:
+    "Simplify subscription management with SubsTrack. Track recurring expenses, manage team subscriptions, monitor billing, and gain better control over your spending.",
+  applicationName: "SubsTrack",
+  keywords: [
+    "SubsTrack",
+    "subscription management",
+    "subscription tracker",
+    "billing management",
+    "recurring payments",
+    "expense tracking",
+    "team subscription management",
+  ],
+  authors: [{ name: "SubsTrack Team" }],
+  creator: "SubsTrack",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "SubsTrack | Smart Subscription Management",
+    description:
+      "Track subscriptions, manage recurring expenses, and simplify billing with SubsTrack.",
+    siteName: "SubsTrack",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SubsTrack | Smart Subscription Management",
+    description:
+      "Manage subscriptions, track expenses, and stay in control of recurring payments with SubsTrack.",
+  },
 };
 
+// Main layout component that wraps all application pages
 export default function RootLayout({
   children,
 }: {
