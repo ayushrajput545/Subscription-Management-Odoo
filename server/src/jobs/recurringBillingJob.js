@@ -1,5 +1,7 @@
 import pool from "../config/db.js";
 import { calculateInvoice } from "../controllers/invoiceController.js";
+import { notifyBillingFailure, notifyInvoiceCreated } from "../utils/notificationService.js";
+import { getNotificationIntervalMs, runNotifications } from "./notificationJob.js";
 
 const DEFAULT_INTERVAL_MS = 60 * 60 * 1000;
 const configuredInterval = Number(process.env.BILLING_INTERVAL_MS);
@@ -17,6 +19,8 @@ const runState = {
     recentFailures: [],
 };
 let timer;
+let nextBillingRunMs;
+let nextNotificationRunMs;
 
 const dateValue = (value) => new Date(`${String(value).slice(0, 10)}T00:00:00.000Z`);
 const dateString = (date) => date.toISOString().slice(0, 10);
@@ -173,7 +177,7 @@ const processDueCycle = async (subscriptionId) => {
         }
         await updateAfterBilling(client, subscription, periodStart, periodEnd, nextBillingDate);
         await client.query("COMMIT");
-        return { kind: "generated", invoiceNumber, periodStart, periodEnd };
+        return { kind: "generated", invoiceId: invoice.rows[0].id, invoiceNumber, periodStart, periodEnd };
     } catch (error) {
         await client.query("ROLLBACK");
         throw error;
@@ -214,6 +218,7 @@ export const runBilling = async (source = "manual") => {
                     subscriptionProcessed = true;
                     if (result.kind === "generated") {
                         runState.successCount += 1;
+                        await notifyInvoiceCreated(result.invoiceId);
                         console.log("Recurring invoice generated", {
                             subscriptionId: id,
                             invoiceNumber: result.invoiceNumber,
@@ -239,6 +244,7 @@ export const runBilling = async (source = "manual") => {
                         subscriptionId: id,
                         code: error.code ?? "PROCESSING_ERROR",
                     });
+                    await notifyBillingFailure(id, error.code ?? "PROCESSING_ERROR");
                     break;
                 }
             }
@@ -263,9 +269,25 @@ export const runBilling = async (source = "manual") => {
 
 export const startRecurringBillingJob = () => {
     if (timer) return;
-    timer = setInterval(() => {
-        void runBilling("scheduled");
-    }, intervalMs);
-    timer.unref();
-    console.log("Recurring billing schedule enabled", { intervalMs });
+    const notificationIntervalMs = getNotificationIntervalMs();
+    nextBillingRunMs = Date.now() + intervalMs;
+    nextNotificationRunMs = Date.now() + notificationIntervalMs;
+    const scheduleNext = () => {
+        const nextRunAt = Math.min(nextBillingRunMs, nextNotificationRunMs);
+        timer = setTimeout(() => {
+            const now = Date.now();
+            if (now >= nextBillingRunMs) {
+                nextBillingRunMs = now + intervalMs;
+                void runBilling("scheduled");
+            }
+            if (now >= nextNotificationRunMs) {
+                nextNotificationRunMs = now + notificationIntervalMs;
+                void runNotifications();
+            }
+            scheduleNext();
+        }, Math.max(0, nextRunAt - Date.now()));
+        timer.unref();
+    };
+    scheduleNext();
+    console.log("Recurring billing schedule enabled", { intervalMs, notificationIntervalMs });
 };

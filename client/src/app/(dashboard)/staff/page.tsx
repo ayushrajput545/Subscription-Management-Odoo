@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogOut, LayoutDashboard, Shield, FileText, Loader2, Zap, Package, CreditCard } from "lucide-react";
+import { LogOut, Shield, FileText, Loader2, Zap, Package, CreditCard, Bell } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function StaffDashboard() {
@@ -32,7 +32,8 @@ export default function StaffDashboard() {
         { icon: <FileText className="w-5 h-5 text-blue-400" />, label: "Invoices", color: "border-blue-700/30 bg-blue-900/10", href: "/staff/invoices" },
         { icon: <CreditCard className="w-5 h-5 text-emerald-400" />, label: "Payments", color: "border-emerald-700/30 bg-emerald-900/10", href: "/staff/payments" },
         { icon: <CreditCard className="w-5 h-5 text-purple-400" />, label: "Reports", color: "border-purple-700/30 bg-purple-900/10", href: "/admin/reports" },
-        { icon: <LayoutDashboard className="w-5 h-5 text-emerald-400" />, label: "Reports", color: "border-emerald-700/30 bg-emerald-900/10" },
+        { icon: <Bell className="w-5 h-5 text-emerald-400" />, label: "Notifications", color: "border-emerald-700/30 bg-emerald-900/10", href: "/notifications" },
+        { icon: <Bell className="w-5 h-5 text-indigo-400" />, label: "Delivery monitoring", color: "border-indigo-700/30 bg-indigo-900/10", href: "/admin/notifications" },
     ];
 
     return (
@@ -79,7 +80,7 @@ export default function StaffDashboard() {
                             {card.icon}
                             <div>
                                 <p className="text-white font-semibold text-sm">{card.label}</p>
-                                <p className="text-gray-500 text-xs mt-0.5">Coming in Phase 2</p>
+                                <p className="text-gray-500 text-xs mt-0.5">Open workspace</p>
                             </div>
                             <span className="text-xs bg-gray-800/80 text-gray-500 px-2.5 py-1 rounded-full self-start">Coming Soon</span>
                         </div>

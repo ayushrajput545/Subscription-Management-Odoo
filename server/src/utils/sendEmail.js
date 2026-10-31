@@ -4,36 +4,42 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-/**
- * Sends an email using SMTP credentials from environment variables.
- * Gracefully handles missing SMTP config (logs error, does not throw).
- */
-export const sendEmail = async ({ to, subject, html }) => {
+let transporter;
+let warnedMissingSmtp = false;
+
+export const sendEmail = async ({ to, subject, html, messageId }) => {
     try {
-        if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
-            console.warn("SMTP not configured — skipping email send.");
+        const { SMTP_HOST, SMTP_USER, SMTP_PASS } = process.env;
+        if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
+            if (!warnedMissingSmtp) {
+                console.warn("SMTP is not fully configured; email notifications will be skipped.");
+                warnedMissingSmtp = true;
+            }
             return false;
         }
 
-        const transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: Number(process.env.SMTP_PORT) || 587,
-            secure: Number(process.env.SMTP_PORT) === 465,
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS,
-            },
-        });
+        if (!transporter) {
+            const port = Number(process.env.SMTP_PORT) || 587;
+            transporter = nodemailer.createTransport({
+                host: SMTP_HOST,
+                port,
+                secure: port === 465,
+                auth: {
+                    user: SMTP_USER,
+                    pass: SMTP_PASS,
+                },
+            });
+        }
 
         await transporter.sendMail({
-            from: process.env.EMAIL_FROM || process.env.SMTP_USER,
+            from: process.env.SMTP_FROM || process.env.EMAIL_FROM || SMTP_USER,
             to,
             subject,
             html,
+            messageId,
         });
         return true;
     } catch (error) {
-        // Log but don't expose delivery failures to callers
         console.error("Email delivery error:", error.message);
         return false;
     }

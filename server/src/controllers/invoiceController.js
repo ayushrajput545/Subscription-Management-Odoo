@@ -1,6 +1,7 @@
 import PDFDocument from "pdfkit";
 import pool from "../config/db.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import { notifyInvoiceCreated } from "../utils/notificationService.js";
 
 const idPattern = /^[1-9]\d*$/;
 const validId = (id) => idPattern.test(String(id));
@@ -573,6 +574,7 @@ export const generateInvoice = async (req, res) => {
             );
         }
         await client.query("COMMIT");
+        await notifyInvoiceCreated(invoice.rows[0].id);
         return res.status(201).json({ invoice: await invoiceDetail(pool, invoice.rows[0].id) });
     } catch (error) {
         await client.query("ROLLBACK");

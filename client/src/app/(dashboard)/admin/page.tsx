@@ -6,7 +6,7 @@ import {
     Users, UserPlus, LogOut, LayoutDashboard, Package,
     CreditCard, FileText, BarChart3, Zap, Pencil, Trash2,
     X, Loader2, Eye, EyeOff, Check, AlertTriangle, ChevronRight,
-    Shield
+    Shield, Bell
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/lib/api";
@@ -28,6 +28,7 @@ const navItems: NavItem[] = [
     { icon: <CreditCard className="w-4 h-4" />, label: "Payments", href: "/admin/payments" },
     { icon: <CreditCard className="w-4 h-4" />, label: "Recurring Billing", href: "/admin/billing" },
     { icon: <BarChart3 className="w-4 h-4" />, label: "Reports", href: "/admin/reports" },
+    { icon: <Bell className="w-4 h-4" />, label: "Notifications", href: "/admin/notifications" },
 ];
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
@@ -249,7 +250,7 @@ export default function AdminDashboard() {
                         <Users className="w-5 h-5" />
                     </button>
                     <h1 className="text-lg font-semibold text-white">{activeSection}</h1>
-                    <div className="ml-auto">
+                    <div className="ml-auto flex items-center gap-4">
                         <span className="hidden sm:block text-sm text-gray-500">
                             Welcome back, <span className="text-gray-300">{user?.name}</span>
                         </span>

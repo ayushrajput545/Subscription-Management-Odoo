@@ -1,4 +1,5 @@
 import pool from "../config/db.js";
+import { notifyPaymentReceived } from "../utils/notificationService.js";
 
 const idPattern = /^[1-9]\d*$/;
 const validId = (value) => idPattern.test(String(value));
@@ -108,6 +109,7 @@ export const recordPayment = async (req, res) => {
             [inserted.rows[0].id]
         );
         await client.query("COMMIT");
+        await notifyPaymentReceived(inserted.rows[0].id);
         return res.status(201).json({
             payment: payment.rows[0],
             invoice: {

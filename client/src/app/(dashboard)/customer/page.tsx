@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogOut, Shield, FileText, User, Loader2, Zap } from "lucide-react";
+import { LogOut, Shield, FileText, User, Loader2, Zap, Bell } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function CustomerDashboard() {
@@ -58,6 +58,7 @@ export default function CustomerDashboard() {
                         { icon: <Shield className="w-5 h-5 text-indigo-400" />, label: "Available Plans", desc: "Explore active subscription plans", color: "border-indigo-700/30 bg-indigo-900/10", href: "/customer/plans" },
                         { icon: <Shield className="w-5 h-5 text-indigo-400" />, label: "My Subscriptions", desc: "View your quotations and subscriptions", color: "border-indigo-700/30 bg-indigo-900/10", href: "/customer/subscriptions" },
                         { icon: <FileText className="w-5 h-5 text-blue-400" />, label: "My Invoices", desc: "View and download your invoices", color: "border-blue-700/30 bg-blue-900/10", href: "/customer/invoices" },
+                        { icon: <Bell className="w-5 h-5 text-emerald-400" />, label: "Notifications", desc: "View account updates and reminders", color: "border-emerald-700/30 bg-emerald-900/10", href: "/notifications" },
                     ].map((card) => card.href ? (
                         <Link key={card.label} href={card.href} className={`rounded-xl border p-5 ${card.color} hover:border-indigo-500/50 transition`}>
                             {card.icon}
