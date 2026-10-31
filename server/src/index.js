@@ -13,6 +13,7 @@ import invoiceRoutes from "./routes/invoiceRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import billingRoutes from "./routes/billingRoutes.js";
 import { startRecurringBillingJob } from "./jobs/recurringBillingJob.js";
+import reportRoutes from "./routes/reportRoutes.js";
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use("/api/v1", catalogRoutes);
 app.use("/api/v1", subscriptionRoutes);
 app.use("/api/v1", paymentRoutes);
 app.use("/api/v1", billingRoutes);
+app.use("/api/v1", reportRoutes);
 app.use("/api/v1", invoiceRoutes);
 
 // ─── 404 Fallback ─────────────────────────────────────────────────────────────

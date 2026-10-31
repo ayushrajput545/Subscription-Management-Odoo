@@ -27,7 +27,7 @@ const navItems: NavItem[] = [
     { icon: <FileText className="w-4 h-4" />, label: "Invoices", href: "/admin/invoices" },
     { icon: <CreditCard className="w-4 h-4" />, label: "Payments", href: "/admin/payments" },
     { icon: <CreditCard className="w-4 h-4" />, label: "Recurring Billing", href: "/admin/billing" },
-    { icon: <BarChart3 className="w-4 h-4" />, label: "Reports", soon: true },
+    { icon: <BarChart3 className="w-4 h-4" />, label: "Reports", href: "/admin/reports" },
 ];
 
 // ─── Toast ────────────────────────────────────────────────────────────────────

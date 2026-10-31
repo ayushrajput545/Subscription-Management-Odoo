@@ -31,6 +31,7 @@ export default function StaffDashboard() {
         { icon: <FileText className="w-5 h-5 text-blue-400" />, label: "Quotation Templates", color: "border-blue-700/30 bg-blue-900/10", href: "/staff/quotation-templates" },
         { icon: <FileText className="w-5 h-5 text-blue-400" />, label: "Invoices", color: "border-blue-700/30 bg-blue-900/10", href: "/staff/invoices" },
         { icon: <CreditCard className="w-5 h-5 text-emerald-400" />, label: "Payments", color: "border-emerald-700/30 bg-emerald-900/10", href: "/staff/payments" },
+        { icon: <CreditCard className="w-5 h-5 text-purple-400" />, label: "Reports", color: "border-purple-700/30 bg-purple-900/10", href: "/admin/reports" },
         { icon: <LayoutDashboard className="w-5 h-5 text-emerald-400" />, label: "Reports", color: "border-emerald-700/30 bg-emerald-900/10" },
     ];
 
@@ -69,7 +70,7 @@ export default function StaffDashboard() {
                             {card.icon}
                             <div>
                                 <p className="text-white font-semibold text-sm">{card.label}</p>
-                                <p className="text-gray-500 text-xs mt-0.5">Open workspace</p>
+                                <p className="text-gray-500 text-xs mt-0.5">{card.label === "Reports" ? "View business analytics" : "Open workspace"}</p>
                             </div>
                             <span className="text-xs bg-gray-800/80 text-indigo-300 px-2.5 py-1 rounded-full self-start">Available</span>
                         </Link>
