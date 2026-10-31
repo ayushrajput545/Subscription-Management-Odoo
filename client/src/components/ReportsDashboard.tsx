@@ -40,6 +40,7 @@ const emptyData: ReportData = {
     payments: { byMethod: [], byDate: [] }, customers: [], expiring: [], outstanding: [],
 };
 
+// Reports dashboard component for displaying and managing report data
 export default function ReportsDashboard() {
     const { user, loading } = useAuth();
     const [data, setData] = useState<ReportData>(emptyData);
