@@ -37,7 +37,7 @@ export const register = async (req, res) => {
         let { name, email, password } = req.body;
 
         if (!name || !email || !password) {
-            return res.status(400).json({ message: "Name, email, and password are required" });
+            return res.status(400).json({ message: "All fields are required" });
         }
 
         name = name.trim();

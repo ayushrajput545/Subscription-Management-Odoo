@@ -185,7 +185,7 @@ export const listDiscounts = async (req, res) => {
         return invalid(res, "page must be positive and limit must be between 1 and 100");
     }
     if (req.query.is_active !== undefined && !["true", "false"].includes(req.query.is_active)) {
-        return invalid(res, "is_active must be true or false");
+        return invalid(res, "is_active must be true or  false");
     }
     const values = [];
     const clauses = [];
@@ -569,8 +569,8 @@ export const generateInvoice = async (req, res) => {
                  (invoice_id, product_id, description, quantity, unit_price, tax_rate, tax_amount, discount_amount, line_total)
                  VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
                 [invoice.rows[0].id, item.product_id, item.description, item.quantity, item.unit_price,
-                    item.tax_rate, moneyFromCents(item.tax), moneyFromCents(item.discount),
-                    moneyFromCents(item.remaining + item.tax)]
+                item.tax_rate, moneyFromCents(item.tax), moneyFromCents(item.discount),
+                moneyFromCents(item.remaining + item.tax)]
             );
         }
         await client.query("COMMIT");
