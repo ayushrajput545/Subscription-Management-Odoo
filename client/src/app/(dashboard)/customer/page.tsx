@@ -56,21 +56,20 @@ export default function CustomerDashboard() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                     {[
                         { icon: <Shield className="w-5 h-5 text-indigo-400" />, label: "Available Plans", desc: "Explore active subscription plans", color: "border-indigo-700/30 bg-indigo-900/10", href: "/customer/plans" },
-                        { icon: <Shield className="w-5 h-5 text-indigo-400" />, label: "My Subscriptions", desc: "View and manage your active plans", color: "border-indigo-700/30 bg-indigo-900/10", soon: true },
-                        { icon: <FileText className="w-5 h-5 text-blue-400" />, label: "My Invoices", desc: "Download and review your invoices", color: "border-blue-700/30 bg-blue-900/10", soon: true },
+                        { icon: <Shield className="w-5 h-5 text-indigo-400" />, label: "My Subscriptions", desc: "View your quotations and subscriptions", color: "border-indigo-700/30 bg-indigo-900/10", href: "/customer/subscriptions" },
+                        { icon: <FileText className="w-5 h-5 text-blue-400" />, label: "My Invoices", desc: "View and download your invoices", color: "border-blue-700/30 bg-blue-900/10", href: "/customer/invoices" },
                     ].map((card) => card.href ? (
                         <Link key={card.label} href={card.href} className={`rounded-xl border p-5 ${card.color} hover:border-indigo-500/50 transition`}>
                             {card.icon}
                             <p className="text-white font-semibold text-sm mt-3">{card.label}</p>
                             <p className="text-gray-500 text-xs mt-0.5">{card.desc}</p>
-                            <span className="inline-block mt-3 text-xs bg-gray-800/80 text-indigo-300 px-2.5 py-1 rounded-full">Browse Plans</span>
+                            <span className="inline-block mt-3 text-xs bg-gray-800/80 text-indigo-300 px-2.5 py-1 rounded-full">{card.label === "Available Plans" ? "Browse Plans" : card.label === "My Subscriptions" ? "View subscriptions" : "View invoices"}</span>
                         </Link>
                     ) : (
                         <div key={card.label} className={`rounded-xl border p-5 ${card.color}`}>
                             {card.icon}
                             <p className="text-white font-semibold text-sm mt-3">{card.label}</p>
                             <p className="text-gray-500 text-xs mt-0.5">{card.desc}</p>
-                            {card.soon && <span className="inline-block mt-3 text-xs bg-gray-800/80 text-gray-500 px-2.5 py-1 rounded-full">Coming Soon</span>}
                         </div>
                     ))}
                 </div>

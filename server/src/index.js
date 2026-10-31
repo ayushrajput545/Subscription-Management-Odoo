@@ -8,6 +8,11 @@ import pool from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import catalogRoutes from "./routes/catalogRoutes.js";
+import subscriptionRoutes from "./routes/subscriptionRoutes.js";
+import invoiceRoutes from "./routes/invoiceRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import billingRoutes from "./routes/billingRoutes.js";
+import { startRecurringBillingJob } from "./jobs/recurringBillingJob.js";
 
 dotenv.config();
 
@@ -37,6 +42,10 @@ app.get("/api/v1/health", (req, res) => {
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1", catalogRoutes);
+app.use("/api/v1", subscriptionRoutes);
+app.use("/api/v1", paymentRoutes);
+app.use("/api/v1", billingRoutes);
+app.use("/api/v1", invoiceRoutes);
 
 // ─── 404 Fallback ─────────────────────────────────────────────────────────────
 
@@ -59,6 +68,7 @@ const startServer = async () => {
   try {
     await pool.query("SELECT 1");
     console.log("PostgreSQL connected");
+    startRecurringBillingJob();
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);

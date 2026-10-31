@@ -20,9 +20,13 @@ const navItems: NavItem[] = [
     { icon: <Users className="w-4 h-4" />, label: "Staff Management" },
     { icon: <Package className="w-4 h-4" />, label: "Products", href: "/admin/products" },
     { icon: <CreditCard className="w-4 h-4" />, label: "Plans", href: "/admin/plans" },
-    { icon: <Shield className="w-4 h-4" />, label: "Subscriptions", soon: true },
-    { icon: <FileText className="w-4 h-4" />, label: "Invoices", soon: true },
-    { icon: <CreditCard className="w-4 h-4" />, label: "Payments", soon: true },
+    { icon: <Shield className="w-4 h-4" />, label: "Subscriptions", href: "/admin/subscriptions" },
+    { icon: <FileText className="w-4 h-4" />, label: "Quotation Templates", href: "/admin/quotation-templates" },
+    { icon: <CreditCard className="w-4 h-4" />, label: "Taxes", href: "/admin/taxes" },
+    { icon: <CreditCard className="w-4 h-4" />, label: "Discounts", href: "/admin/discounts" },
+    { icon: <FileText className="w-4 h-4" />, label: "Invoices", href: "/admin/invoices" },
+    { icon: <CreditCard className="w-4 h-4" />, label: "Payments", href: "/admin/payments" },
+    { icon: <CreditCard className="w-4 h-4" />, label: "Recurring Billing", href: "/admin/billing" },
     { icon: <BarChart3 className="w-4 h-4" />, label: "Reports", soon: true },
 ];
 

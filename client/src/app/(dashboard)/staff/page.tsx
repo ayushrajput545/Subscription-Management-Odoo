@@ -27,8 +27,10 @@ export default function StaffDashboard() {
     const placeholders = [
         { icon: <Package className="w-5 h-5 text-indigo-400" />, label: "Products", color: "border-indigo-700/30 bg-indigo-900/10", href: "/staff/products" },
         { icon: <CreditCard className="w-5 h-5 text-emerald-400" />, label: "Plans", color: "border-emerald-700/30 bg-emerald-900/10", href: "/staff/plans" },
-        { icon: <Shield className="w-5 h-5 text-purple-400" />, label: "Subscriptions", color: "border-purple-700/30 bg-purple-900/10" },
-        { icon: <FileText className="w-5 h-5 text-blue-400" />, label: "Invoices", color: "border-blue-700/30 bg-blue-900/10" },
+        { icon: <Shield className="w-5 h-5 text-purple-400" />, label: "Subscriptions", color: "border-purple-700/30 bg-purple-900/10", href: "/staff/subscriptions" },
+        { icon: <FileText className="w-5 h-5 text-blue-400" />, label: "Quotation Templates", color: "border-blue-700/30 bg-blue-900/10", href: "/staff/quotation-templates" },
+        { icon: <FileText className="w-5 h-5 text-blue-400" />, label: "Invoices", color: "border-blue-700/30 bg-blue-900/10", href: "/staff/invoices" },
+        { icon: <CreditCard className="w-5 h-5 text-emerald-400" />, label: "Payments", color: "border-emerald-700/30 bg-emerald-900/10", href: "/staff/payments" },
         { icon: <LayoutDashboard className="w-5 h-5 text-emerald-400" />, label: "Reports", color: "border-emerald-700/30 bg-emerald-900/10" },
     ];
 
@@ -67,7 +69,7 @@ export default function StaffDashboard() {
                             {card.icon}
                             <div>
                                 <p className="text-white font-semibold text-sm">{card.label}</p>
-                                <p className="text-gray-500 text-xs mt-0.5">View catalog</p>
+                                <p className="text-gray-500 text-xs mt-0.5">Open workspace</p>
                             </div>
                             <span className="text-xs bg-gray-800/80 text-indigo-300 px-2.5 py-1 rounded-full self-start">Available</span>
                         </Link>
@@ -86,7 +88,7 @@ export default function StaffDashboard() {
                 <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-6">
                     <h2 className="text-white font-semibold mb-1">Phase 2 Preview</h2>
                     <p className="text-gray-400 text-sm">
-                        Browse the product catalog and available plans. Subscription, invoice, and report tools will be added in later phases.
+                        Browse the catalog and manage quotations and subscriptions. Invoice and payment tools will be added in later phases.
                     </p>
                 </div>
             </main>

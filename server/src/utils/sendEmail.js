@@ -12,7 +12,7 @@ export const sendEmail = async ({ to, subject, html }) => {
     try {
         if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
             console.warn("SMTP not configured — skipping email send.");
-            return;
+            return false;
         }
 
         const transporter = nodemailer.createTransport({
@@ -31,8 +31,10 @@ export const sendEmail = async ({ to, subject, html }) => {
             subject,
             html,
         });
+        return true;
     } catch (error) {
         // Log but don't expose delivery failures to callers
         console.error("Email delivery error:", error.message);
+        return false;
     }
 };
